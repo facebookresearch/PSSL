@@ -33,7 +33,7 @@ pip install pssl
 ```
 
 ## How PSSL works
-PSSL implements research ideas as in [Cabannes, Bietti and Balestriero 2022](LINK).
+PSSL implements research ideas as in [Cabannes, Bietti and Balestriero 2022](https://arxiv.org/abs/2211.03782).
 It is implemented with `pytorch`.
 
 ## Full documentation
