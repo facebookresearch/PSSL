@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "pssl"
-version = "0.0.1"
+version = "0.0.2"
 authors = [
   { name="Vivien Cabannes", email="vivc@meta.com" },
 ]
@@ -18,5 +18,5 @@ classifiers = [
 ]
 
 [project.urls]
-"Homepage" = "https://github.com/fairinternal/PSSL"
-"Bug Tracker" = "https://github.com/fairinternal/PSSL/issues"
+"Homepage" = "https://github.com/facebookresearch/PSSL"
+"Bug Tracker" = "https://github.com/facebookresearch/PSSL/issues"

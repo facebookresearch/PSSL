@@ -27,7 +27,7 @@ pip install -e .
 ```
 
 ## Installing PSSL
-PSSL would soon be on the Python package index, which allows you to install it with the python installer.
+PSSL is on the Python package index, which allows you to install it with the python installer.
 ```shell
 pip install pssl
 ```
