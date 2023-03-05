@@ -7,4 +7,4 @@ LICENSE file in the root directory of this source tree.
 @ 2022, Vivien Cabannes
 """
 
-from .halfmoon import HalfMoonDataset
+from .halfmoon import AugmentedHalfMoonDataset, HalfMoonDataset

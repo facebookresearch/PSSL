@@ -11,8 +11,8 @@ LICENSE file in the root directory of this source tree.
 import logging
 from pathlib import Path
 
-LOGS_PATH = Path('/') / "checkpoint" / "vivc" / "logs" / "ssl"
-SAVE_PATH = Path.home() / "code" / "ssl" / "savings"
+LOGS_PATH = Path.home() / "Desktop" / "checkpoint"
+SAVE_PATH = Path.home() / "Desktop"
 
 
 logging_level = logging.DEBUG

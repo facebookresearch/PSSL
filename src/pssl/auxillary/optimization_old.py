@@ -67,9 +67,13 @@ def training(
                 inputs.requires_grad = True
 
             # Objective computation
-            loss = loss_function(net, inputs, **loss_kwargs)
-            reg = regularizer(net, inputs, centered=True)
-            obj = loss / lambda_reg + reg
+            outputs = net(inputs)
+            loss = loss_function(net, inputs, outputs=outputs, **loss_kwargs)
+            if use_reg:
+                reg = regularizer(outputs, centered=True)
+                obj = loss / lambda_reg + reg
+            else:
+                obj = loss
             obj.backward()
 
             # Gradient step

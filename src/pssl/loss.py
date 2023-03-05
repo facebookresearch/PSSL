@@ -172,3 +172,71 @@ def graph_Laplacian(net: nn.Module, inputs: torch.Tensor, outputs: Union[None, t
     diff = sim_weights * diff
     loss = torch.mean(diff)
     return loss
+
+
+def augmented_ortho_reg(net: nn.Module, inputs: torch.Tensor, outputs: Union[None, torch.Tensor] = None, **kwargs):
+    """
+    Compute unbiased version of VCReg.
+
+    Parameters
+    ----------
+    net: torch.nn.Module
+        Pytorch neural network module.
+    inputs: torch.Tensor
+        Tensor of inputs to feed the networks of size `n * m * in_dim`,
+        where `n` is the number of input samples, and `m` of augmentations per inputs.
+    outputs: torch.Tensor, optional
+        To avoid recomputing outputs inside function scope. Default is None.
+
+    Returns
+    -------
+    loss: torch.Tensor
+        Empirical average of augmentation differences.
+    """
+    n, m, in_dim = inputs.shape
+    if outputs is None:
+        outputs = net(inputs.reshape(-1, in_dim)).reshape(n, m, -1)
+
+    k = outputs.shape[-1]
+    d = n // 2
+    psi1 = outputs[:d]
+    psi2 = outputs[d:]
+
+    ortho_reg = torch.sum(torch.sum(psi1 * psi2, dim=-1) ** 2)
+    ortho_reg = ortho_reg - torch.sum(outputs ** 2)
+    ortho_reg = ortho_reg / (d * m) + k
+    return ortho_reg
+
+
+def fixed_augmentation_diff(net: nn.Module, inputs: torch.Tensor, outputs: Union[None, torch.Tensor] = None, **kwargs):
+    """
+    Compute unbiased version of invariance term in VICReg.
+
+    Parameters
+    ----------
+    net: torch.nn.Module
+        Pytorch neural network module.
+    inputs: torch.Tensor
+        Tensor of inputs to feed the networks of size `n * m * in_dim`,
+        where `n` is the number of input samples, and `m` of augmentations per inputs.
+    outputs: torch.Tensor, optional
+        To avoid recomputing outputs inside function scope. Default is None.
+
+    Returns
+    -------
+    loss: torch.Tensor
+        Empirical average of augmentation differences.
+    """
+    if outputs is None:
+        n, m, in_dim = inputs.shape
+        outputs = net(inputs.reshape(-1, in_dim)).reshape(n, m, -1)
+
+    invariance = torch.sum(outputs ** 2)
+    invariance = invariance - torch.sum(torch.sum(outputs, dim=1) ** 2) / outputs.shape[1]
+    invariance = 2 * invariance
+
+    # # helping with numerical stability
+    # if invariance < 0:
+    #     invariance = 0
+    
+    return invariance

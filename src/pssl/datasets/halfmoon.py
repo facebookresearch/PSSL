@@ -71,3 +71,66 @@ class HalfMoonDataset(Dataset):
             idx = idx.tolist()
 
         return self.x[idx], self.y[idx]
+
+
+class AugmentedHalfMoonDataset(Dataset):
+    """
+    Half Moon dataset with fixed augmentation pairs.
+
+    Parameters
+    ----------
+    n: int, optional
+        Number of data in the dataset. Default is 1000
+    sigma: float, optional
+        Noise level in the dataset. Default is zero.
+    epsilon: float, optional
+        Noise level of augmentation. Default is one tenth.
+    m: int, optional
+        Number of views per samples. Default is two.
+    device: str, optional
+        Computation device. Default is 'cpu'.
+    dtype: type, optional
+        Type of parameters. Default is torch.float (32 bits).
+    complexe: bool, optional
+        Either to create a dataset with four label corresponding to orthan.
+        Default is False.
+    """
+    def __init__(self, n: int = 1000, sigma: float = 0, epsilon: float = 0.1, m: int = 2,
+                 device: str = 'cpu', dtype: type = torch.float, complex: bool = False):
+        self.xi, self.y = self.generate_half_moon(n, m, sigma, epsilon, device, dtype, complex=complex)
+
+    @staticmethod
+    def generate_half_moon(n, m, sigma, epsilon, device, dtype, complex=False):
+        """
+        Generate half moon dataset
+
+        Returns
+        -------
+        xi: ndarray
+            Augmented data as tensor of size `n*m*d`.
+        y: ndarray
+            Output data in {0, 1} as a vector of size `n`.
+        """
+        theta = 2 * torch.pi * torch.randn(n, device=device, dtype=dtype)
+        x = torch.empty((n, 2), device=device, dtype=dtype)
+        x[:, 0] = torch.cos(theta)
+        x[:, 1] = torch.sin(theta)
+        y = (x[:, 0] > 0).type(dtype)
+        if complex:
+            z = (x[:, 1] > 0).type(dtype)
+        x[y == 1, 1] += 1
+        x += sigma * torch.randn(x.size(), device=device, dtype=dtype)
+        xi = torch.hstack((x,) * m).reshape(len(x), m, -1)
+        xi += epsilon * torch.randn(xi.size(), device=device, dtype=dtype)
+        if complex:
+            y = F.one_hot((y + 2 * z).type(torch.LongTensor))
+        return xi, y
+
+    def __len__(self):
+        return len(self.xi)
+
+    def __getitem__(self, idx: Union[int, list[int]]):
+        if torch.is_tensor(idx):
+            idx = idx.tolist()
+
+        return self.xi[idx], self.y[idx]
