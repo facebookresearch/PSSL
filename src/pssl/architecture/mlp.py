@@ -61,6 +61,8 @@ class MLP(nn.Module):
                 setattr(
                     self, "nls" + str(i), nn.BatchNorm1d(out_size, **factory_kwargs)
                 )
+            elif layer_norm.lower() == "none":
+                setattr(self, "nls" + str(i), nn.Identity(**factory_kwargs))
             else:
                 raise ValueError(f"Layer norm keyword is only supported for `batch` or `layer`, got {layer_norm}.")
             in_size = out_size
