@@ -7,5 +7,6 @@ LICENSE file in the root directory of this source tree.
 @ 2022, Vivien Cabannes
 """
 
+from .initialization import set_all_seed
 from .optimization import training
 from .plots import color_plot
