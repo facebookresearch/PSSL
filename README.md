@@ -26,12 +26,6 @@ If you plan to use and develop it, install it in development mode
 pip install -e .
 ```
 
-## Installing PSSL
-PSSL is on the Python package index, which allows you to install it with the python installer.
-```shell
-pip install pssl
-```
-
 ## How PSSL works
 PSSL implements research ideas as in [Cabannes, Bietti and Balestriero 2022](https://arxiv.org/abs/2211.03782).
 It is implemented with `pytorch`.
